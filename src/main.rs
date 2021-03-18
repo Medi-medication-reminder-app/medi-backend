@@ -30,7 +30,7 @@ pub struct DbConn(diesel::MysqlConnection);
 fn main() {
     // println!("Hello, world!");
     rocket::ignite()
-        .mount("/", routes::users::routes())
+        .mount("/users", routes::users::routes())
         .register(utils::catcher::catchers())
         .attach(DbConn::fairing())
         .attach(cors::CorsFairing)
