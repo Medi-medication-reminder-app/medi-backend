@@ -1,22 +1,22 @@
 table! {
     caretakers (caretaker_id) {
-        phone_number -> Integer,
-        user_id -> Integer,
         caretaker_id -> Nullable<Integer>,
+        user_id -> Nullable<Integer>,
         name -> Varchar,
+        phone_number -> Varchar,
     }
 }
 
 table! {
     concentrations (concentration_id) {
-        concentration_id -> Nullable<Integer>,
+        concentration_id -> Integer,
         concentration_amount -> Varchar,
     }
 }
 
 table! {
     conditions (condition_id) {
-        condition_id -> Nullable<Integer>,
+        condition_id -> Integer,
         user_id -> Integer,
         condition_name -> Varchar,
         condition_details -> Varchar,
@@ -25,21 +25,21 @@ table! {
 
 table! {
     dosages (dosage_id) {
-        dosage_id -> Nullable<Integer>,
+        dosage_id -> Integer,
         dosage_type -> Varchar,
     }
 }
 
 table! {
     feelings (feeling_id) {
-        feeling_id -> Nullable<Integer>,
+        feeling_id -> Integer,
         feeling_name -> Varchar,
     }
 }
 
 table! {
     journal_entries (entry_id) {
-        entry_id -> Nullable<Integer>,
+        entry_id -> Integer,
         user_id -> Integer,
         timestamp -> Timestamp,
         feeling_id -> Integer,
@@ -49,7 +49,7 @@ table! {
 
 table! {
     take_times (take_time_id) {
-        take_time_id -> Nullable<Integer>,
+        take_time_id -> Integer,
         treatment_id -> Integer,
         time -> Time,
         frequency -> Integer,
@@ -60,7 +60,7 @@ table! {
 
 table! {
     taken_treatment_log (taken_log_id) {
-        taken_log_id -> Nullable<Integer>,
+        taken_log_id -> Integer,
         user_id -> Integer,
         treatment_id -> Integer,
         timestamp -> Timestamp,
@@ -71,26 +71,26 @@ table! {
 
 table! {
     time_preferences (preference_id) {
-        preference_id -> Nullable<Integer>,
+        preference_id -> Integer,
         preference_type -> Varchar,
     }
 }
 
 table! {
     treatments (treatment_id) {
-        treatment_id -> Nullable<Integer>,
+        treatment_id -> Integer,
         user_id -> Integer,
         name -> Varchar,
         unit_id -> Integer,
         dosage_id -> Integer,
-        concentration_id -> Nullable<Integer>,
+        concentration_id -> Integer,
         color -> Varchar,
     }
 }
 
 table! {
     units (unit_id) {
-        unit_id -> Nullable<Integer>,
+        unit_id -> Integer,
         unit_name -> Varchar,
     }
 }
