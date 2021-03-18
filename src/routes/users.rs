@@ -1,4 +1,4 @@
-use crate::models::user_accounts::UserAccount;
+use crate::models::database::user_accounts::UserAccount;
 use crate::utils::response::*;
 // use crate::*;
 use rocket_contrib::json::{Json, JsonError};
