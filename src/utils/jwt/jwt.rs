@@ -19,7 +19,7 @@ pub fn generate_jwt(user: &UserAccount) -> Option<Token> {
             JWT_KEY.to_string()
         }
     };
-    println!("secret is {}", secret);
+    // println!("secret is {}", secret);
 
     let claim = Claim {
         exp: (Utc::now() + Duration::weeks(43)),

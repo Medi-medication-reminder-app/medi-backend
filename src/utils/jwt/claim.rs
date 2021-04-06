@@ -20,7 +20,7 @@ pub fn get_claim(jwt: &str) -> Option<Claim> {
         Some(token) => token,
         None => return None,
     };
-    println!("JWT is: {:?}", jwt);
+    // println!("JWT is: {:?}", jwt);
 
     let secret = match env::var("KEY") {
         Ok(val) => val,
@@ -35,13 +35,13 @@ pub fn get_claim(jwt: &str) -> Option<Claim> {
 
     let token = match decoded {
         Ok(token) => token,
-        Err(e) => {
-            println!("Incorrect jwt {:?}", e);
+        Err(_) => {
+            // println!("Incorrect jwt {:?}", e);
             return None;
         }
     };
 
-    println!("Claim is: {:?}", token.claims);
+    // println!("Claim is: {:?}", token.claims);
 
     Some(token.claims)
 }
