@@ -5,7 +5,7 @@ url = "mysql://mediadmin:changethis@127.0.0.1:3306/mediusers"
   
 [development]
 address = "localhost"
-port = 8000
+port = 8001
 #workers = [number of cpus * 2]
 keep_alive = 5
 log = "normal"

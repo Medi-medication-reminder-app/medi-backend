@@ -6,6 +6,7 @@ use diesel::result::Error;
 
 use crate::schema::user_accounts;
 
+
 #[derive(Serialize, Deserialize, Queryable, Insertable, AsChangeset)]
 #[table_name = "user_accounts"]
 pub struct UserAccount {
@@ -23,6 +24,10 @@ impl UserAccount {
 
     pub fn read_by_id(id: i32, conn: &MysqlConnection) -> Result<UserAccount, Error> {
         user_accounts::table.find(id).first(conn)
+    }
+
+    pub fn read_by_email(user_email: String, conn: &MysqlConnection) -> Result<UserAccount, Error> {
+        user_accounts::table.filter(user_accounts::email.eq(user_email)).first(conn)
     }
 
     pub fn create(user: UserAccount, conn: &MysqlConnection) -> Result<UserAccount, Error> {
