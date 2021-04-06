@@ -35,7 +35,7 @@ fn update(
 ) -> Result<ApiResponse, ApiError> {
     let claim = match get_claim(key.key.as_str()) {
         Some(c) => c,
-        None => return Err(fail(403, String::from("Forbidden"), String::from("Invalid token"))),
+        None => return Err(fail(401, String::from("Unauthorized"), String::from("Invalid token"))),
     };
     
     match data {
