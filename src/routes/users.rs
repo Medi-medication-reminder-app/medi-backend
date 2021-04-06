@@ -4,6 +4,7 @@ use crate::utils::response::*;
 use rocket_contrib::json::{Json, JsonError};
 use crate::DbConn;
 
+// TODO: Delete this for release
 #[get("/")]
 fn read(conn: DbConn) -> Result<ApiResponse, ApiError> {
     let result = UserAccount::read(&conn);
@@ -13,6 +14,7 @@ fn read(conn: DbConn) -> Result<ApiResponse, ApiError> {
     }
 }
 
+// TODO: Delete this for release
 #[get("/<id>")]
 fn read_by_id(id: i32, conn: DbConn) -> Result<ApiResponse, ApiError> {
     let result = UserAccount::read_by_id(id, &conn);
@@ -22,27 +24,7 @@ fn read_by_id(id: i32, conn: DbConn) -> Result<ApiResponse, ApiError> {
     }
 }
 
-#[post("/", data = "<user>")]
-fn create(
-    user: Result<Json<UserAccount>, JsonError>,
-    conn: DbConn,
-) -> Result<ApiResponse, ApiError> {
-    match user {
-        Ok(u) => {
-            let insert = UserAccount {
-                account_id: None,
-                ..u.into_inner()
-            };
-            let result = UserAccount::create(insert, &conn);
-            match result {
-                Ok(r) => Ok(success(json!(r))),
-                Err(e) => Err(db_error(e)),
-            }
-        }
-        Err(e) => Err(json_error(e)),
-    }
-}
-
+// TODO: update this so it takes a jwt::ApiKey and updates BOTH UserAccounts AND UserInfo
 #[put("/<id>", data = "<user>")]
 fn update(
     id: i32,
@@ -65,13 +47,7 @@ fn update(
     }
 }
 
-#[delete("/<id>")]
-fn delete(id: i32, conn: DbConn) -> ApiResponse {
-    let result = UserAccount::delete(id, &conn);
-    success(json!(result))
-}
-
 // -- routes
 pub fn routes() -> Vec<rocket::Route> {
-    routes![read, read_by_id, create, update, delete]
+    routes![read, read_by_id, update]
 }

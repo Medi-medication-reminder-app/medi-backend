@@ -25,6 +25,10 @@ impl UserInfo {
         user_info::table.find(id).first(conn)
     }
 
+    pub fn read_by_account_id(id: i32, conn: &MysqlConnection) -> Result<UserInfo, Error> {
+        user_info::table.filter(user_info::account_id.eq(id)).first(conn)
+    }
+
     pub fn create(user: UserInfo, conn: &MysqlConnection) -> Result<UserInfo, Error> {
         let new_user = UserInfo {
             ..user

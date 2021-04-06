@@ -21,12 +21,6 @@ mod cors;
 #[database("mediusers")]
 pub struct DbConn(diesel::MysqlConnection);
 
-// this is for utils/ "research"
-// https://github.com/kayrules/rust-rocket-mysql-starter/blob/master/src/controllers/user.rs
-
-// this if for everything
-// https://cprimozic.net/blog/rust-rocket-cloud-run/
-
 fn main() {
     // println!("Hello, world!");
     rocket::ignite()
