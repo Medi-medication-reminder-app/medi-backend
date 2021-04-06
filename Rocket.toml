@@ -1,5 +1,5 @@
 [global.databases.mediusers]
-url = "mysql://mediadmin:changethis@127.0.0.1:3306/mediusers"
+url = "mysql://mediadmin:changethis@medidb:3306/mediusers"
 
   
 [development]
