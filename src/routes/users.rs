@@ -1,8 +1,11 @@
+use rocket_contrib::json::{Json, JsonError};
+
 use crate::models::database::user_accounts::UserAccount;
+use crate::models::api::modify_user::ModifyUserData;
 use crate::utils::response::*;
 // use crate::*;
-use rocket_contrib::json::{Json, JsonError};
 use crate::DbConn;
+use crate::utils::jwt::{apikey::ApiKey, claim::get_claim};
 
 // TODO: Delete this for release
 #[get("/")]
@@ -24,20 +27,23 @@ fn read_by_id(id: i32, conn: DbConn) -> Result<ApiResponse, ApiError> {
     }
 }
 
-// TODO: update this so it takes a jwt::ApiKey and updates BOTH UserAccounts AND UserInfo
-#[put("/<id>", data = "<user>")]
+#[put("/modify", data = "<data>")]
 fn update(
-    id: i32,
-    user: Result<Json<UserAccount>, JsonError>,
+    data: Result<Json<ModifyUserData>, JsonError>,
     conn: DbConn,
+    key: ApiKey,
 ) -> Result<ApiResponse, ApiError> {
-    match user {
-        Ok(u) => {
-            let update = UserAccount {
-                account_id: Some(id),
-                ..u.into_inner()
+    let claim = match get_claim(key.key.as_str()) {
+        Some(c) => c,
+        None => return Err(fail(403, String::from("Forbidden"), String::from("Invalid token"))),
+    };
+    
+    match data {
+        Ok(d) => {
+            let modify = ModifyUserData {
+                ..d.into_inner()
             };
-            let result = UserAccount::update(id, update, &conn);
+            let result = ModifyUserData::update(modify, claim.usr, &conn);
             match result {
                 Ok(r) => Ok(success(json!(r))),
                 Err(e) => Err(db_error(e)),
