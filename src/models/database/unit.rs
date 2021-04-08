@@ -19,4 +19,8 @@ impl Unit {
     pub fn read_by_id(id: i32, conn: &MysqlConnection) -> Result<Unit, Error> {
         units::table.find(id).first(conn)
     }
+
+    pub fn read_by_value(value: String, conn: &MysqlConnection) -> Result<Unit, Error> {
+        units::table.filter(units::unit_name.eq(value)).first(conn)
+    }
 }

@@ -20,4 +20,8 @@ impl Concentration {
     pub fn read_by_id(id: i32, conn: &MysqlConnection) -> Result<Concentration, Error> {
         concentrations::table.find(id).first(conn)
     }
+
+    pub fn read_by_value(value: String, conn: &MysqlConnection) -> Result<Concentration, Error> {
+        concentrations::table.filter(concentrations::concentration_amount.eq(value)).first(conn)
+    }
 }

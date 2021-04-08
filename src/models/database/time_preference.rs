@@ -19,4 +19,8 @@ impl TimePreference {
     pub fn read_by_id(id: i32, conn: &MysqlConnection) -> Result<TimePreference, Error> {
         time_preferences::table.find(id).first(conn)
     }
+
+    pub fn read_by_value(value: String, conn: &MysqlConnection) -> Result<TimePreference, Error> {
+        time_preferences::table.filter(time_preferences::preference_type.eq(value)).first(conn)
+    }
 }

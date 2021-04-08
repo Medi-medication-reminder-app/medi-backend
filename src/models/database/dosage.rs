@@ -19,4 +19,8 @@ impl Dosage {
     pub fn read_by_id(id: i32, conn: &MysqlConnection) -> Result<Dosage, Error> {
         dosages::table.find(id).first(conn)
     }
+
+    pub fn read_by_value(value: String, conn: &MysqlConnection) -> Result<Dosage, Error> {
+        dosages::table.filter(dosages::dosage_type.eq(value)).first(conn)
+    }
 }
