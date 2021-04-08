@@ -52,7 +52,6 @@ table! {
         take_time_id -> Nullable<Integer>,
         treatment_id -> Integer,
         time -> Time,
-        frequency -> Integer,
         day -> Varchar,
         preference_id -> Nullable<Integer>,
     }
@@ -84,6 +83,7 @@ table! {
         unit_id -> Integer,
         dosage_id -> Integer,
         concentration_id -> Integer,
+        frequency -> Integer,
         color -> Varchar,
     }
 }

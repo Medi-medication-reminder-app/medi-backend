@@ -3,7 +3,6 @@ use chrono::NaiveTime;
 #[derive(Serialize, Deserialize)]
 pub struct TakeTimeForm {
     pub time: NaiveTime,
-    pub frequency: i32,
     pub day: String,
     pub preference: Option<String>,
 }
@@ -14,6 +13,7 @@ pub struct TreatmentForm {
     pub unit: String,
     pub dosage: String,
     pub concentration: String,
+    pub frequency: i32,
     pub color: String,
     pub times: Vec<TakeTimeForm>,
 }

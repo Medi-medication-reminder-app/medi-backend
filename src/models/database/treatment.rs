@@ -14,6 +14,7 @@ pub struct Treatment {
     pub unit_id: i32,
     pub dosage_id: i32,
     pub concentration_id: i32,
+    pub frequency: i32,
     pub color: String,
 }
 

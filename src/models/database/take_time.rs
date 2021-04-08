@@ -12,7 +12,6 @@ pub struct TakeTime {
     pub take_time_id: Option<i32>,
     pub treatment_id: i32,
     pub time: NaiveTime,
-    pub frequency: i32,
     pub day: String,
     pub preference_id: Option<i32>,
 }
