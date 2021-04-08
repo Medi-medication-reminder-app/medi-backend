@@ -2,7 +2,7 @@ use chrono::NaiveDate;
 use diesel::mysql::MysqlConnection;
 use diesel::result::Error;
 
-use crate::models::database::{user_accounts::UserAccount, user_info::UserInfo, caretaker::Caretaker};
+use crate::models::database::{user_account::UserAccount, user_info::UserInfo, caretaker::Caretaker};
 use crate::models::api::login::LoginForm;
 
 #[derive(Serialize, Deserialize)]

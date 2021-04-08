@@ -2,7 +2,7 @@ use diesel::mysql::MysqlConnection;
 use chrono::NaiveDate;
 use diesel::result::Error;
 
-use crate::models::database::{user_accounts::UserAccount, user_info::UserInfo};
+use crate::models::database::{user_account::UserAccount, user_info::UserInfo};
 
 #[derive(Serialize, Deserialize)]
 pub struct ModifyUserData {

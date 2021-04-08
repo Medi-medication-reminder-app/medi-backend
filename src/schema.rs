@@ -49,12 +49,12 @@ table! {
 
 table! {
     take_times (take_time_id) {
-        take_time_id -> Integer,
+        take_time_id -> Nullable<Integer>,
         treatment_id -> Integer,
         time -> Time,
         frequency -> Integer,
         day -> Varchar,
-        preference_id -> Integer,
+        preference_id -> Nullable<Integer>,
     }
 }
 
@@ -78,7 +78,7 @@ table! {
 
 table! {
     treatments (treatment_id) {
-        treatment_id -> Integer,
+        treatment_id -> Nullable<Integer>,
         user_id -> Integer,
         name -> Varchar,
         unit_id -> Integer,

@@ -1,7 +1,7 @@
 use diesel::mysql::MysqlConnection;
 use diesel::result::Error;
 
-use crate::models::database::user_accounts::UserAccount;
+use crate::models::database::user_account::UserAccount;
 use crate::utils::jwt::jwt::{Token, generate_jwt};
 
 #[derive(Serialize, Deserialize)]

@@ -1,6 +1,6 @@
 use rocket_contrib::json::{Json, JsonError};
 
-use crate::models::database::user_accounts::UserAccount;
+use crate::models::database::user_account::UserAccount;
 use crate::models::api::modify_user::ModifyUserData;
 use crate::utils::response::*;
 // use crate::*;

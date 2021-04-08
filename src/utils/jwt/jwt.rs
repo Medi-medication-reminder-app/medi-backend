@@ -4,7 +4,7 @@ extern crate jsonwebtoken;
 
 use self::jsonwebtoken::{encode, Header, EncodingKey};
 use crate::utils::jwt::claim::{get_claim, Claim};
-use crate::models::database::user_accounts::UserAccount;
+use crate::models::database::user_account::UserAccount;
 use std::env;
 
 pub static JWT_KEY: &str = "very_secret";
