@@ -1,3 +1,9 @@
-pub mod user_accounts;
+pub mod user_account;
 pub mod user_info;
 pub mod caretaker;
+pub mod concentration;
+pub mod dosage;
+pub mod unit;
+pub mod time_preference;
+pub mod take_time;
+pub mod treatment;
