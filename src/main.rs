@@ -26,6 +26,7 @@ fn main() {
     rocket::ignite()
         .mount("/", routes::auth::routes())
         .mount("/users", routes::users::routes())
+        .mount("/treatments", routes::treatments::routes())
         .register(utils::catcher::catchers())
         .attach(DbConn::fairing())
         .attach(cors::CorsFairing)

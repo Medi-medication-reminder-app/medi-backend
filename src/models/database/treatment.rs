@@ -31,6 +31,16 @@ impl Treatment {
         treatments::table.filter(treatments::user_id.eq(id)).load::<Treatment>(conn)
     }
 
+    pub fn read_by_user_id_and_treatment_name(
+        id: i32, name: String, 
+        conn: &MysqlConnection
+    ) -> Result<Treatment, Error> {
+        treatments::table
+        .filter(treatments::user_id.eq(id))
+        .filter(treatments::name.eq(name))
+        .first(conn)
+    }
+
     pub fn create(t: Treatment, conn: &MysqlConnection) -> Result<Treatment, Error> {
         let new_treatment = Treatment {
             ..t

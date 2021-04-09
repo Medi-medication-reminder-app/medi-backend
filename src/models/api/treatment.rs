@@ -31,6 +31,11 @@ pub struct TreatmentForm {
     pub times: Vec<TakeTimeForm>,
 }
 
+#[derive(Serialize, Deserialize)]
+pub struct TreatmentDeleteForm {
+    pub name: String,
+}
+
 impl TreatmentForm {
     pub fn read(email: String, conn: &MysqlConnection) -> Result<Vec<TreatmentForm>, Error> {
         let account_id = UserAccount::read_by_email(email, conn)?.account_id.unwrap();
@@ -58,13 +63,6 @@ impl TreatmentForm {
     }
 
     pub fn create(email: String, form: TreatmentForm, conn: &MysqlConnection) -> Result<(), Error> {
-        // get user_id
-        // build Treatment
-        // create Treatment
-        // for each time
-        // build TimeForm
-        // create TimeForm
-        // end for
         let account_id = UserAccount::read_by_email(email, conn)?.account_id.unwrap();
         let user_id = UserInfo::read_by_account_id(account_id, conn)?.user_id.unwrap();
 
@@ -80,6 +78,50 @@ impl TreatmentForm {
         };
 
         let new_treatment = Treatment::create(treatment, conn)?;
+
+        for t in form.times {
+            let time = TakeTimeForm {
+                time: t.time,
+                day: t.day,
+                preference: match t.preference {
+                    Some(p) => Some(TimePreference::read_by_value(p, conn)?.preference_type),
+                    None => None,
+                }
+            };
+            TakeTimeForm::create(time, new_treatment.treatment_id.unwrap(), conn)?;
+        }
+
+        Ok(())
+    }
+
+    pub fn update(email: String, form: TreatmentForm, conn: &MysqlConnection) -> Result<(), Error> {
+        let account_id = UserAccount::read_by_email(email, conn)?.account_id.unwrap();
+        let user_id = UserInfo::read_by_account_id(account_id, conn)?.user_id.unwrap();
+        let db_treatment = Treatment::read_by_user_id_and_treatment_name(
+            user_id, 
+            form.name.clone(), 
+            conn
+        )?;
+
+        let treatment = Treatment {
+            treatment_id: db_treatment.treatment_id,
+            user_id: user_id,
+            name: form.name,
+            unit_id: Unit::read_by_value(form.unit, conn)?.unit_id,
+            dosage_id: Dosage::read_by_value(form.dosage, conn)?.dosage_id,
+            concentration_id: Concentration::read_by_value(form.concentration, conn)?.concentration_id,
+            frequency: form.frequency,
+            color: form.color,
+        };
+
+        let new_treatment = Treatment::update(db_treatment.treatment_id.unwrap(), treatment, conn)?;
+        
+        // i know this is not the best way, but i am getting all treatment times to delete
+        // them and reinsert the new ones from the form
+        let old_times = TakeTime::read_by_treatment_id(new_treatment.treatment_id.unwrap(), conn)?;
+        for t in old_times {
+            TakeTime::delete(t.take_time_id.unwrap(), conn);
+        }
 
         for t in form.times {
             let time = TakeTimeForm {
@@ -141,5 +183,26 @@ impl TakeTimeForm {
             }, 
             conn
         )
+    }
+}
+
+impl TreatmentDeleteForm {
+    pub fn delete(email: String, form: TreatmentDeleteForm, conn: &MysqlConnection) -> Result<(), Error> {
+        let account_id = UserAccount::read_by_email(email, conn)?.account_id.unwrap();
+        let user_id = UserInfo::read_by_account_id(account_id, conn)?.user_id.unwrap();
+        let treatment = Treatment::read_by_user_id_and_treatment_name(
+            user_id, 
+            form.name.clone(), 
+            conn
+        )?;
+
+        let times = TakeTime::read_by_treatment_id(treatment.treatment_id.unwrap(), conn)?;
+        for t in times {
+            TakeTime::delete(t.take_time_id.unwrap(), conn);
+        }
+
+        Treatment::delete(treatment.treatment_id.unwrap(), conn);
+
+        Ok(())
     }
 }
