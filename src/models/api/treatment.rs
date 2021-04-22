@@ -3,10 +3,10 @@ use diesel::mysql::MysqlConnection;
 use diesel::result::Error;
 
 use crate::models::database::{
-    take_time::TakeTime, 
-    treatment::Treatment, 
-    time_preference::TimePreference, 
-    user_account::UserAccount, 
+    take_time::TakeTime,
+    treatment::Treatment,
+    time_preference::TimePreference,
+    user_account::UserAccount,
     user_info::UserInfo,
     unit::Unit,
     dosage::Dosage,
@@ -34,6 +34,13 @@ pub struct TreatmentForm {
 #[derive(Serialize, Deserialize)]
 pub struct TreatmentDeleteForm {
     pub name: String,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct ConcentrationDosageUnit {
+    pub concentrations: Vec<String>,
+    pub dosages: Vec<String>,
+    pub units: Vec<String>,
 }
 
 impl TreatmentForm {
@@ -98,8 +105,8 @@ impl TreatmentForm {
         let account_id = UserAccount::read_by_email(email, conn)?.account_id.unwrap();
         let user_id = UserInfo::read_by_account_id(account_id, conn)?.user_id.unwrap();
         let db_treatment = Treatment::read_by_user_id_and_treatment_name(
-            user_id, 
-            form.name.clone(), 
+            user_id,
+            form.name.clone(),
             conn
         )?;
 
@@ -115,7 +122,7 @@ impl TreatmentForm {
         };
 
         let new_treatment = Treatment::update(db_treatment.treatment_id.unwrap(), treatment, conn)?;
-        
+
         // i know this is not the best way, but i am getting all treatment times to delete
         // them and reinsert the new ones from the form
         let old_times = TakeTime::read_by_treatment_id(new_treatment.treatment_id.unwrap(), conn)?;
@@ -168,7 +175,7 @@ impl TakeTimeForm {
     }
 
     pub fn create(form: TakeTimeForm, treatment_id: i32, conn: &MysqlConnection) -> Result<TakeTime, Error> {
-        
+
         let pref_id = match form.preference {
             Some(p) => Some(TimePreference::read_by_value(p, conn)?.preference_id),
             None => None,
@@ -180,7 +187,7 @@ impl TakeTimeForm {
                 time: form.time,
                 day: form.day,
                 preference_id: pref_id,
-            }, 
+            },
             conn
         )
     }
@@ -191,8 +198,8 @@ impl TreatmentDeleteForm {
         let account_id = UserAccount::read_by_email(email, conn)?.account_id.unwrap();
         let user_id = UserInfo::read_by_account_id(account_id, conn)?.user_id.unwrap();
         let treatment = Treatment::read_by_user_id_and_treatment_name(
-            user_id, 
-            form.name.clone(), 
+            user_id,
+            form.name.clone(),
             conn
         )?;
 
@@ -204,5 +211,15 @@ impl TreatmentDeleteForm {
         Treatment::delete(treatment.treatment_id.unwrap(), conn);
 
         Ok(())
+    }
+}
+
+impl ConcentrationDosageUnit {
+    pub fn read(conn: &MysqlConnection) -> Result<ConcentrationDosageUnit, Error> {
+        Ok(ConcentrationDosageUnit {
+            concentrations: Concentration::read(&conn)?.into_iter().map(|c| c.concentration_amount).collect::<Vec<String>>(),
+            dosages: Dosage::read(&conn)?.into_iter().map(|d| d.dosage_type).collect::<Vec<String>>(),
+            units: Unit::read(&conn)?.into_iter().map(|u| u.unit_name).collect::<Vec<String>>(),
+        })
     }
 }
