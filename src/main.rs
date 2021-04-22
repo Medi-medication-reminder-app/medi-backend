@@ -27,6 +27,7 @@ fn main() {
         .mount("/", routes::auth::routes())
         .mount("/users", routes::users::routes())
         .mount("/treatments", routes::treatments::routes())
+        .mount("/today", routes::today::routes())
         .register(utils::catcher::catchers())
         .attach(DbConn::fairing())
         .attach(cors::CorsFairing)

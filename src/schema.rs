@@ -59,7 +59,7 @@ table! {
 
 table! {
     taken_treatment_log (taken_log_id) {
-        taken_log_id -> Integer,
+        taken_log_id -> Nullable<Integer>,
         user_id -> Integer,
         treatment_id -> Integer,
         timestamp -> Timestamp,
