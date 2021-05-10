@@ -8,3 +8,5 @@ pub mod time_preference;
 pub mod take_time;
 pub mod treatment;
 pub mod take_log;
+pub mod feeling;
+pub mod journal_entry;

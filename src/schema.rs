@@ -39,7 +39,7 @@ table! {
 
 table! {
     journal_entries (entry_id) {
-        entry_id -> Integer,
+        entry_id -> Nullable<Integer>,
         user_id -> Integer,
         timestamp -> Timestamp,
         feeling_id -> Integer,

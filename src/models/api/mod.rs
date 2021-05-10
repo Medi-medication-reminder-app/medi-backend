@@ -3,3 +3,4 @@ pub mod login;
 pub mod modify_user;
 pub mod treatment;
 pub mod today;
+pub mod journal;
