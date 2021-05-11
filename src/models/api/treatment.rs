@@ -41,6 +41,7 @@ pub struct ConcentrationDosageUnit {
     pub concentrations: Vec<String>,
     pub dosages: Vec<String>,
     pub units: Vec<String>,
+    pub preferences: Vec<String>,
 }
 
 impl TreatmentForm {
@@ -220,6 +221,7 @@ impl ConcentrationDosageUnit {
             concentrations: Concentration::read(&conn)?.into_iter().map(|c| c.concentration_amount).collect::<Vec<String>>(),
             dosages: Dosage::read(&conn)?.into_iter().map(|d| d.dosage_type).collect::<Vec<String>>(),
             units: Unit::read(&conn)?.into_iter().map(|u| u.unit_name).collect::<Vec<String>>(),
+            preferences: TimePreference::read(conn)?.into_iter().map(|p| p.preference_type).collect::<Vec<String>>(),
         })
     }
 }
