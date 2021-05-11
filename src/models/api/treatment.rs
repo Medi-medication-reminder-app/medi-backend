@@ -32,7 +32,7 @@ pub struct TreatmentForm {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct TreatmentDeleteForm {
+pub struct TreatmentNameForm {
     pub name: String,
 }
 
@@ -194,8 +194,8 @@ impl TakeTimeForm {
     }
 }
 
-impl TreatmentDeleteForm {
-    pub fn delete(email: String, form: TreatmentDeleteForm, conn: &MysqlConnection) -> Result<(), Error> {
+impl TreatmentNameForm {
+    pub fn delete(email: String, form: TreatmentNameForm, conn: &MysqlConnection) -> Result<(), Error> {
         let account_id = UserAccount::read_by_email(email, conn)?.account_id.unwrap();
         let user_id = UserInfo::read_by_account_id(account_id, conn)?.user_id.unwrap();
         let treatment = Treatment::read_by_user_id_and_treatment_name(
@@ -212,6 +212,26 @@ impl TreatmentDeleteForm {
         Treatment::delete(treatment.treatment_id.unwrap(), conn);
 
         Ok(())
+    }
+
+    pub fn read_by_name(email: String, form: TreatmentNameForm, conn: &MysqlConnection) -> Result<TreatmentForm, Error> {
+        let account_id = UserAccount::read_by_email(email, conn)?.account_id.unwrap();
+        let user_id = UserInfo::read_by_account_id(account_id, conn)?.user_id.unwrap();
+        let db_treatment = Treatment::read_by_user_id_and_treatment_name(
+            user_id,
+            form.name,
+            conn
+        )?;
+
+        Ok(TreatmentForm {
+            name: db_treatment.name,
+            unit: Unit::read_by_id(db_treatment.unit_id, conn)?.unit_name,
+            dosage: Dosage::read_by_id(db_treatment.dosage_id, conn)?.dosage_type,
+            concentration: Concentration::read_by_id(db_treatment.concentration_id, conn)?.concentration_amount,
+            frequency: db_treatment.frequency,
+            color: db_treatment.color,
+            times: TakeTimeForm::read(db_treatment.treatment_id.unwrap(), conn)?,
+        })
     }
 }
 
