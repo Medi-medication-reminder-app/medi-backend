@@ -4,6 +4,7 @@ use crate::utils::response::*;
 use crate::DbConn;
 use crate::utils::jwt::{apikey::ApiKey, claim::get_claim};
 use crate::models::api::journal::JournalForm;
+use crate::models::database::feeling::Feeling;
 
 #[get("/")]
 fn read(conn: DbConn, key: ApiKey) -> Result<ApiResponse, ApiError> {
@@ -49,6 +50,20 @@ fn create(
     }
 }
 
+#[get("/feeling")]
+fn read_feelings(conn: DbConn, key: ApiKey) -> Result<ApiResponse, ApiError> {
+    let _claim = match get_claim(key.key.as_str()) {
+        Some(c) => c,
+        None => return Err(fail(401, String::from("Unauthorized"), String::from("Invalid token"))),
+    };
+
+    let result = Feeling::read(&conn);
+    match result {
+        Ok(r) => Ok(success(json!(r.into_iter().map(|f| f.feeling_name).collect::<Vec<String>>()))),
+        Err(e) => Err(db_error(e)),
+    }
+}
+
 pub fn routes() -> Vec<rocket::Route> {
-    routes![read, create]
+    routes![read, create, read_feelings]
 }
