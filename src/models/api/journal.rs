@@ -1,6 +1,6 @@
 use diesel::mysql::MysqlConnection;
 use diesel::result::Error;
-use chrono::Utc;
+use chrono::{Utc, NaiveDateTime};
 
 use crate::models::database::{
     user_account::UserAccount,
@@ -13,6 +13,7 @@ use crate::models::database::{
 pub struct JournalForm {
     pub feeling: String,
     pub details: String,
+    pub timestamp: Option<NaiveDateTime>,
 }
 
 impl JournalForm {
@@ -28,6 +29,7 @@ impl JournalForm {
             let form_elem = JournalForm {
                 feeling: feeling.feeling_name,
                 details: e.details,
+                timestamp: Some(e.timestamp),
             };
             form_entries.push(form_elem);
         }
