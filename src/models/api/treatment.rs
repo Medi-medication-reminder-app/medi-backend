@@ -22,6 +22,7 @@ pub struct TakeTimeForm {
 
 #[derive(Serialize, Deserialize)]
 pub struct TreatmentForm {
+    pub id: Option<i32>,
     pub name: String,
     pub unit: String,
     pub dosage: String,
@@ -32,8 +33,8 @@ pub struct TreatmentForm {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct TreatmentNameForm {
-    pub name: String,
+pub struct TreatmentIdForm {
+    pub id: i32,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -55,6 +56,7 @@ impl TreatmentForm {
         for t in db_treatments {
             let times = TakeTimeForm::read(t.treatment_id.unwrap(), conn)?;
             let form_elem = TreatmentForm {
+                id: t.treatment_id,
                 name: t.name,
                 unit: Unit::read_by_id(t.unit_id, conn)?.unit_name,
                 dosage: Dosage::read_by_id(t.dosage_id, conn)?.dosage_type,
@@ -105,9 +107,9 @@ impl TreatmentForm {
     pub fn update(email: String, form: TreatmentForm, conn: &MysqlConnection) -> Result<(), Error> {
         let account_id = UserAccount::read_by_email(email, conn)?.account_id.unwrap();
         let user_id = UserInfo::read_by_account_id(account_id, conn)?.user_id.unwrap();
-        let db_treatment = Treatment::read_by_user_id_and_treatment_name(
+        let db_treatment = Treatment::read_by_user_id_and_treatment_id(
             user_id,
-            form.name.clone(),
+            form.id.unwrap(),   // maybe check before that this exists
             conn
         )?;
 
@@ -194,13 +196,13 @@ impl TakeTimeForm {
     }
 }
 
-impl TreatmentNameForm {
-    pub fn delete(email: String, form: TreatmentNameForm, conn: &MysqlConnection) -> Result<(), Error> {
+impl TreatmentIdForm {
+    pub fn delete(email: String, form: TreatmentIdForm, conn: &MysqlConnection) -> Result<(), Error> {
         let account_id = UserAccount::read_by_email(email, conn)?.account_id.unwrap();
         let user_id = UserInfo::read_by_account_id(account_id, conn)?.user_id.unwrap();
-        let treatment = Treatment::read_by_user_id_and_treatment_name(
+        let treatment = Treatment::read_by_user_id_and_treatment_id(
             user_id,
-            form.name.clone(),
+            form.id,
             conn
         )?;
 
@@ -214,16 +216,17 @@ impl TreatmentNameForm {
         Ok(())
     }
 
-    pub fn read_by_name(email: String, form: TreatmentNameForm, conn: &MysqlConnection) -> Result<TreatmentForm, Error> {
+    pub fn read_by_name(email: String, form: TreatmentIdForm, conn: &MysqlConnection) -> Result<TreatmentForm, Error> {
         let account_id = UserAccount::read_by_email(email, conn)?.account_id.unwrap();
         let user_id = UserInfo::read_by_account_id(account_id, conn)?.user_id.unwrap();
-        let db_treatment = Treatment::read_by_user_id_and_treatment_name(
+        let db_treatment = Treatment::read_by_user_id_and_treatment_id(
             user_id,
-            form.name,
+            form.id,
             conn
         )?;
 
         Ok(TreatmentForm {
+            id: db_treatment.treatment_id,
             name: db_treatment.name,
             unit: Unit::read_by_id(db_treatment.unit_id, conn)?.unit_name,
             dosage: Dosage::read_by_id(db_treatment.dosage_id, conn)?.dosage_type,

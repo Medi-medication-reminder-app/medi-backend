@@ -23,7 +23,7 @@ fn read(conn: DbConn, key: ApiKey) -> Result<ApiResponse, ApiError> {
 }
 
 #[post("/single", data = "<data>")]
-fn read_by_name(data: Result<Json<TreatmentNameForm>, JsonError>, conn: DbConn, key: ApiKey) -> Result<ApiResponse, ApiError> {
+fn read_by_name(data: Result<Json<TreatmentIdForm>, JsonError>, conn: DbConn, key: ApiKey) -> Result<ApiResponse, ApiError> {
     let claim = match get_claim(key.key.as_str()) {
         Some(c) => c,
         None => return Err(fail(401, String::from("Unauthorized"), String::from("Invalid token"))),
@@ -31,10 +31,10 @@ fn read_by_name(data: Result<Json<TreatmentNameForm>, JsonError>, conn: DbConn, 
 
     match data {
         Ok(d) => {
-            let new = TreatmentNameForm {
+            let new = TreatmentIdForm {
                 ..d.into_inner()
             };
-            let result = TreatmentNameForm::read_by_name(
+            let result = TreatmentIdForm::read_by_name(
                 claim.usr,
                 new,
                 &conn
@@ -110,7 +110,7 @@ fn update(
 
 #[delete("/", data = "<data>")]
 fn delete(
-    data: Result<Json<TreatmentNameForm>, JsonError>,
+    data: Result<Json<TreatmentIdForm>, JsonError>,
     conn: DbConn,
     key: ApiKey
 ) -> Result<ApiResponse, ApiError> {
@@ -121,10 +121,10 @@ fn delete(
 
     match data {
         Ok(d) => {
-            let new = TreatmentNameForm {
+            let new = TreatmentIdForm {
                 ..d.into_inner()
             };
-            let result = TreatmentNameForm::delete(
+            let result = TreatmentIdForm::delete(
                 claim.usr,
                 new,
                 &conn

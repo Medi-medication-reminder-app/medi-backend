@@ -31,8 +31,18 @@ impl Treatment {
         treatments::table.filter(treatments::user_id.eq(id)).load::<Treatment>(conn)
     }
 
+    pub fn read_by_user_id_and_treatment_id(
+        user_id: i32, treatment_id: i32,
+        conn: &MysqlConnection
+    ) -> Result<Treatment, Error> {
+        treatments::table
+        .filter(treatments::user_id.eq(user_id))
+        .filter(treatments::treatment_id.eq(treatment_id))
+        .first(conn)
+    }
+
     pub fn read_by_user_id_and_treatment_name(
-        id: i32, name: String, 
+        id: i32, name: String,
         conn: &MysqlConnection
     ) -> Result<Treatment, Error> {
         treatments::table
