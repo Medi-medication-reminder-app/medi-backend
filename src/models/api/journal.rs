@@ -9,7 +9,7 @@ use crate::models::database::{
     journal_entry::JournalEntry,
 };
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Eq, Ord, PartialEq, PartialOrd)]
 pub struct JournalForm {
     pub feeling: String,
     pub details: String,
@@ -34,6 +34,7 @@ impl JournalForm {
             form_entries.push(form_elem);
         }
 
+        form_entries.sort_by(|a, b| a.timestamp.cmp(&b.timestamp));
         Ok(form_entries)
     }
 
