@@ -25,7 +25,7 @@ fn main() {
     // println!("Hello, world!");
     rocket::ignite()
         .mount("/", routes::auth::routes())
-        .mount("/users", routes::users::routes())
+        .mount("/user", routes::users::routes())
         .mount("/treatments", routes::treatments::routes())
         .mount("/today", routes::today::routes())
         .mount("/journal", routes::journal::routes())

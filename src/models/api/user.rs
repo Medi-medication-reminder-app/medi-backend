@@ -5,7 +5,7 @@ use diesel::result::Error;
 use crate::models::database::{user_account::UserAccount, user_info::UserInfo};
 
 #[derive(Serialize, Deserialize)]
-pub struct ModifyUserData {
+pub struct UserData {
     pub email: Option<String>,
     pub password: Option<String>,
     pub name: Option<String>,
@@ -13,17 +13,23 @@ pub struct ModifyUserData {
     pub birthday: Option<NaiveDate>,
 }
 
-impl ModifyUserData {
-    pub fn update(data: ModifyUserData, email: String, conn: &MysqlConnection) -> Result<(), Error> {
-        let mut user_account = match UserAccount::read_by_email(email, conn) {
-            Ok(a) => a,
-            Err(e) => return Err(e)
-        };
+impl UserData {
+    pub fn read(email: String, conn: &MysqlConnection) -> Result<UserData, Error> {
+        let user_account = UserAccount::read_by_email(email, conn)?;
+        let user_info = UserInfo::read_by_account_id(user_account.account_id.unwrap(), conn)?;
 
-        let mut user_info = match UserInfo::read_by_account_id(user_account.account_id.unwrap(), conn) {
-            Ok(i) => i,
-            Err(e) => return Err(e)
-        };
+        Ok(UserData {
+            email: Some(user_account.email),
+            password: Some(user_account.password),
+            name: user_info.name,
+            gender: user_info.gender,
+            birthday: user_info.birthday,
+        })
+    }
+
+    pub fn update(data: UserData, email: String, conn: &MysqlConnection) -> Result<(), Error> {
+        let mut user_account = UserAccount::read_by_email(email, conn)?;
+        let mut user_info = UserInfo::read_by_account_id(user_account.account_id.unwrap(), conn)?;
 
         if let Some(e) = data.email {
             user_account.email = e;
@@ -36,12 +42,12 @@ impl ModifyUserData {
         user_info.name = data.name;
 
         user_info.gender = data.gender;
-        
+
         user_info.birthday = data.birthday;
 
         let ret = UserAccount::update(
-            user_account.account_id.unwrap(), 
-            user_account, 
+            user_account.account_id.unwrap(),
+            user_account,
             conn
         );
 
@@ -50,8 +56,8 @@ impl ModifyUserData {
         }
 
         let ret = UserInfo::update(
-            user_info.user_id.unwrap(), 
-            user_info, 
+            user_info.user_id.unwrap(),
+            user_info,
             conn
         );
 
