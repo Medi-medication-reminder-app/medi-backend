@@ -111,7 +111,7 @@ table! {
         account_id -> Integer,
         name -> Nullable<Varchar>,
         gender -> Nullable<Varchar>,
-        birthday -> Nullable<Date>,
+        age -> Nullable<Integer>,
     }
 }
 

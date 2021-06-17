@@ -1,4 +1,4 @@
-use chrono::NaiveDate;
+
 use diesel::mysql::MysqlConnection;
 use diesel::prelude::*;
 use diesel::result::Error;
@@ -12,7 +12,7 @@ pub struct UserInfo {
     pub account_id: i32,
     pub name: Option<String>,
     pub gender: Option<String>,
-    pub birthday: Option<NaiveDate>,
+    pub age: Option<i32>,
 }
 
 impl UserInfo {

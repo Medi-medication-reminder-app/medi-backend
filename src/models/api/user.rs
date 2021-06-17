@@ -1,5 +1,4 @@
 use diesel::mysql::MysqlConnection;
-use chrono::NaiveDate;
 use diesel::result::Error;
 
 use crate::models::database::{user_account::UserAccount, user_info::UserInfo};
@@ -10,7 +9,7 @@ pub struct UserData {
     pub password: Option<String>,
     pub name: Option<String>,
     pub gender: Option<String>,
-    pub birthday: Option<NaiveDate>,
+    pub age: Option<i32>,
 }
 
 impl UserData {
@@ -23,7 +22,7 @@ impl UserData {
             password: Some(user_account.password),
             name: user_info.name,
             gender: user_info.gender,
-            birthday: user_info.birthday,
+            age: user_info.age,
         })
     }
 
@@ -43,7 +42,7 @@ impl UserData {
 
         user_info.gender = data.gender;
 
-        user_info.birthday = data.birthday;
+        user_info.age = data.age;
 
         let ret = UserAccount::update(
             user_account.account_id.unwrap(),

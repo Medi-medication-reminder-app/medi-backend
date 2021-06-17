@@ -1,4 +1,3 @@
-use chrono::NaiveDate;
 use diesel::mysql::MysqlConnection;
 use diesel::result::Error;
 
@@ -11,7 +10,7 @@ pub struct SignupForm {
     pub password: String,
     pub name: Option<String>,
     pub gender: Option<String>,
-    pub birthday: Option<NaiveDate>,
+    pub age: Option<i32>,
     pub caretaker: Option<Caretaker>,
 }
 
@@ -33,7 +32,7 @@ impl SignupForm {
                     account_id: a.account_id.unwrap(),  // because it matched in Ok, there must be an account_id
                     name: form.name,
                     gender: form.gender,
-                    birthday: form.birthday,
+                    age: form.age,
                 };
                 match UserInfo::create(user_info, conn) {
                     Ok(i) => {
@@ -59,7 +58,7 @@ impl SignupForm {
                     },
                     Err(e) => Err(e),
                 }
-                
+
             }
             Err(e) => Err(e),
         }
