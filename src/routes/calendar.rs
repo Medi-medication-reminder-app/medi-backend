@@ -1,20 +1,19 @@
 use rocket_contrib::json::{Json, JsonError};
-use chrono::Utc;
+// use chrono::Utc;
 
 use crate::utils::response::*;
 use crate::DbConn;
 use crate::utils::jwt::{apikey::ApiKey, claim::get_claim};
 use crate::models::api::calendar::*;
 
-#[get("/")]
+#[get("/thisweek")]
 fn read(conn: DbConn, key: ApiKey) -> Result<ApiResponse, ApiError> {
     let claim = match get_claim(key.key.as_str()) {
         Some(c) => c,
         None => return Err(fail(401, String::from("Unauthorized"), String::from("Invalid token"))),
     };
 
-    let result = CalendarTreatment::read_by_day(
-        Utc::now().naive_utc().date(),
+    let result = CalendarTreatment::read_thisweek(
         claim.usr,
         &conn
     );
@@ -24,12 +23,8 @@ fn read(conn: DbConn, key: ApiKey) -> Result<ApiResponse, ApiError> {
     }
 }
 
-#[put("/", data = "<data>")]
-fn update(
-    data: Result<Json<TodayTakeForm>, JsonError>,
-    conn: DbConn,
-    key: ApiKey
-) -> Result<ApiResponse, ApiError> {
+#[post("/between", data = "<data>")]
+fn read_between(data: Result<Json<DateRangeForm>, JsonError>, conn: DbConn, key: ApiKey) -> Result<ApiResponse, ApiError> {
     let claim = match get_claim(key.key.as_str()) {
         Some(c) => c,
         None => return Err(fail(401, String::from("Unauthorized"), String::from("Invalid token"))),
@@ -37,12 +32,13 @@ fn update(
 
     match data {
         Ok(d) => {
-            let new = TodayTakeForm {
+            let range = DateRangeForm {
                 ..d.into_inner()
             };
-            let result = TodayTakeForm::create(
+            let result = CalendarTreatment::read_between(
+                range.start,
+                range.end,
                 claim.usr,
-                new,
                 &conn
             );
             match result {
@@ -54,6 +50,7 @@ fn update(
     }
 }
 
+
 pub fn routes() -> Vec<rocket::Route> {
-    routes![read, update]
+    routes![read, read_between]
 }

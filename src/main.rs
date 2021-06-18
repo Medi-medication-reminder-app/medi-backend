@@ -28,6 +28,7 @@ fn main() {
         .mount("/user", routes::users::routes())
         .mount("/treatments", routes::treatments::routes())
         .mount("/today", routes::today::routes())
+        .mount("/calendar", routes::calendar::routes())
         .mount("/journal", routes::journal::routes())
         .register(utils::catcher::catchers())
         .attach(DbConn::fairing())
