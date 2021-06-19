@@ -32,7 +32,7 @@ pub struct TodayTakeForm {
     pub taken: bool,
 }
 
-struct DateRange(NaiveDate, NaiveDate);
+pub struct DateRange(pub NaiveDate, pub NaiveDate);
 
 impl Iterator for DateRange {
     type Item = NaiveDate;
@@ -121,7 +121,10 @@ impl CalendarTreatment {
     ) -> Result<Vec<Vec<CalendarTreatment>>, Error> {
         let mut calendar: Vec<Vec<CalendarTreatment>> = Vec::new();
         for date in DateRange(start, end) {
-            calendar.push(CalendarTreatment::read_by_day(date, email.clone(), conn)?);
+            let date_calendar  =CalendarTreatment::read_by_day(date, email.clone(), conn)?;
+            if date_calendar.len() > 0 {
+                calendar.push(date_calendar);
+            }
         }
 
         Ok(calendar)
