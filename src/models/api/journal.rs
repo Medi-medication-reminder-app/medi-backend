@@ -1,6 +1,6 @@
 use diesel::mysql::MysqlConnection;
 use diesel::result::Error;
-use chrono::{Utc, NaiveDateTime};
+use chrono::{Utc, NaiveDateTime, NaiveDate};
 
 use crate::models::database::{
     user_account::UserAccount,
@@ -8,6 +8,7 @@ use crate::models::database::{
     feeling::Feeling,
     journal_entry::JournalEntry,
 };
+use crate::models::api::calendar::DateRange;
 
 #[derive(Serialize, Deserialize, Eq, Ord, PartialEq, PartialOrd)]
 pub struct JournalForm {
@@ -36,6 +37,36 @@ impl JournalForm {
 
         form_entries.sort_by(|a, b| a.timestamp.cmp(&b.timestamp));
         Ok(form_entries)
+    }
+
+    pub fn read_by_date(date: NaiveDate, email: String, conn: &MysqlConnection) -> Result<Vec<JournalForm>, Error> {
+        let entries = JournalForm::read(email, conn)?;
+        let mut date_entries = Vec::new();
+
+        for e in entries {
+            if e.timestamp.unwrap().date() == date {
+                date_entries.push(e);
+            }
+        }
+
+        Ok(date_entries)
+    }
+
+    pub fn read_between(
+        start: NaiveDate,
+        end: NaiveDate,
+        email: String,
+        conn: &MysqlConnection
+    ) -> Result<Vec<Vec<JournalForm>>, Error> {
+        let mut journal: Vec<Vec<JournalForm>> = Vec::new();
+        for date in DateRange(start, end) {
+            let date_journal = JournalForm::read_by_date(date, email.clone(), conn)?;
+            if date_journal.len() > 0 {
+                journal.push(date_journal);
+            }
+        }
+
+        Ok(journal)
     }
 
     pub fn create(email: String, form: JournalForm, conn: &MysqlConnection) -> Result<(), Error> {
