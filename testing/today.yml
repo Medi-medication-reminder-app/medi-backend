@@ -1,0 +1,12 @@
+---
+threads: 4
+base: 'https://backend-i6aduo54iq-lz.a.run.app' # Use your deployment URL here
+iterations: 50
+rampup: 2
+
+plan:
+  - name: GET Today
+    request:
+      url: /today
+      headers:
+        Authorization: Bearer Token eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NDk0MDU2NjAsImlhdCI6MTYyMzM5OTI2MCwiaXNzIjoiTWVkaSIsInVzciI6ImRvcmVsQHNhcG9ncm9wYS5ybyJ9.i6hgLSbVqDmOvM68B1VW6ojFrHVGc7tVso-tgzqnvXI
