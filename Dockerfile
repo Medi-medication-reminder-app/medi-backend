@@ -35,4 +35,4 @@ COPY --from=builder \
 WORKDIR /root
 # CMD ROCKET_PORT=8000 DATABASE_URL=mysql://mediadmin:changethis@127.0.0.1:3306/mediusers /usr/local/bin/medi-backend
 # CMD ROCKET_PORT=8000 /usr/local/bin/medi-backend
-CMD ROCKET_ENV=stage /usr/local/bin/medi-backend
+CMD ROCKET_ENV=stage ROCKET_PORT=$PORT /usr/local/bin/medi-backend
