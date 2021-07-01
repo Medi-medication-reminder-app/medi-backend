@@ -1,0 +1,12 @@
+1 utilizator
+10 tratamente
+7 ce ii apar in Today
+5 administrari in Today
+
+10 accesari concurente
+50 de accesari per thread
+
+
+DB Memory usage nu a urcat de 1.75GB
+
+DB si backend sunt puse in aceeasi regiune geografica (Europa de Vest), dar nu comunica prin IP private doar in cadrul GCP, DB are un IP public la care se conecteza B
